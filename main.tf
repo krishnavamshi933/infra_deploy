@@ -61,14 +61,14 @@ resource "aws_security_group" "django_sg" {
     from_port       = 5432
     to_port         = 5432
     protocol        = "tcp"
-    security_groups = [aws_security_group.db_sg.id]
+    security_groups = [aws_security_group.nginx_sg.id]
   }
 
   ingress {
     from_port       = 80
     to_port         = 80
     protocol        = "tcp"
-    security_groups = [aws_security_group.nginx_sg.id]
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   ingress {
@@ -145,7 +145,7 @@ resource "aws_instance" "django_app_1" {
 
   network_interface {
     subnet_id       = var.subnet_id
-    security_groups = [aws_security_group.django_sg.id, aws_security_group.nginx_sg.id]
+    security_groups = [aws_security_group.django_sg.id]
   }
 }
 
@@ -161,7 +161,7 @@ resource "aws_instance" "django_app_2" {
 
   network_interface {
     subnet_id       = var.subnet_id
-    security_groups = [aws_security_group.django_sg.id, aws_security_group.nginx_sg.id]
+    security_groups = [aws_security_group.django_sg.id]
   }
 }
 
