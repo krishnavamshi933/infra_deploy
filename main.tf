@@ -16,6 +16,10 @@ variable "allowed_ssh_cidr_blocks" {
   default     = ["0.0.0.0/0"]  # Update with your desired CIDR blocks
 }
 
+variable "ami_id" {
+  default = "ami-0430580de6244e02e"  # Replace with your desired AMI ID
+}
+
 # Configure AWS provider
 provider "aws" {
   region = "us-east-2"  # Replace with your desired region
@@ -117,68 +121,60 @@ resource "aws_security_group" "db_sg" {
 
 # Create Nginx Load Balancer
 resource "aws_instance" "nginx_lb" {
-  ami           = "ami-0430580de6244e02e"  # Replace with your desired Nginx AMI ID
+  ami           = var.ami_id
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
+  subnet_id     = var.subnet_id
   associate_public_ip_address = true  # Enable public IP for the Nginx server
+
+  vpc_security_group_ids = [aws_security_group.nginx_sg.id]
 
   tags = {
     Name = "nginx-lb"
-  }
-
-  network_interface {
-    subnet_id = var.subnet_id
-    security_groups = [aws_security_group.nginx_sg.id]
   }
 }
 
 # Create Django Application Servers
 resource "aws_instance" "django_app_1" {
-  ami           = "ami-0430580de6244e02e"  # Replace with your desired Django AMI ID
+  ami           = var.ami_id
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
+  subnet_id     = var.subnet_id
   associate_public_ip_address = false  # Disable public IP for the Django app servers
+
+  vpc_security_group_ids = [aws_security_group.django_sg.id]
 
   tags = {
     Name = "django-app-1"
   }
-
-  network_interface {
-    subnet_id       = var.subnet_id
-    security_groups = [aws_security_group.django_sg.id]
-  }
 }
 
 resource "aws_instance" "django_app_2" {
-  ami           = "ami-0430580de6244e02e"  # Replace with your desired Django AMI ID
+  ami           = var.ami_id
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
+  subnet_id     = var.subnet_id
   associate_public_ip_address = false  # Disable public IP for the Django app servers
+
+  vpc_security_group_ids = [aws_security_group.django_sg.id]
 
   tags = {
     Name = "django-app-2"
-  }
-
-  network_interface {
-    subnet_id       = var.subnet_id
-    security_groups = [aws_security_group.django_sg.id]
   }
 }
 
 # Create PostgreSQL Database Server
 resource "aws_instance" "postgres_db" {
-  ami           = "ami-0430580de6244e02e"  # Replace with your desired PostgreSQL AMI ID
+  ami           = var.ami_id
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
+  subnet_id     = var.subnet_id
   associate_public_ip_address = false  # Disable public IP for the PostgreSQL server
+
+  vpc_security_group_ids = [aws_security_group.db_sg.id]
 
   tags = {
     Name = "postgres-db"
-  }
-
-  network_interface {
-    subnet_id       = var.subnet_id
-    security_groups = [aws_security_group.db_sg.id]
   }
 }
 
