@@ -13,7 +13,7 @@ variable "key_pair_name" {
 
 # Configure AWS provider
 provider "aws" {
-  region = "us-west-2"  # Replace with your desired region
+  region = "us-east-2"  # Replace with your desired region
 }
 
 # Create Nginx Load Balancer Security Group
