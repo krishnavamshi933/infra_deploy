@@ -19,32 +19,29 @@ servers = [
 def connect(server):
     return Connection(host=server['server_ip'], user=server['username'], connect_kwargs={'key_filename': server['pem_file_path']})
 
-# Function to update packages and install essential security tools
-def update_packages_and_install_tools(server):
+# Function to update packages and perform system hardening steps
+def perform_security_hardening(server):
     conn = connect(server)
+
+    # Update packages
     conn.sudo('apt-get update')
     conn.sudo('apt-get upgrade -y')
-    conn.sudo('apt-get install -y ufw fail2ban')
 
-# Function to configure firewall (UFW)
-def configure_firewall(server):
-    conn = connect(server)
+    # Secure SSH
+    conn.sudo('sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/" /etc/ssh/sshd_config')
+    conn.sudo('sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config')
+    conn.sudo('systemctl restart ssh')
+
+    # Configure firewall (UFW)
     conn.sudo('ufw default deny incoming')
     conn.sudo('ufw default allow outgoing')
     conn.sudo('ufw allow OpenSSH')
     conn.sudo('ufw enable')
 
-# Function to configure Fail2ban
-def configure_fail2ban(server):
-    conn = connect(server)
+    # Configure Fail2ban
+    conn.sudo('apt-get install -y fail2ban')
     conn.sudo('systemctl enable fail2ban')
     conn.sudo('systemctl start fail2ban')
-
-# Function to perform security hardening steps on a server
-def perform_security_hardening(server):
-    update_packages_and_install_tools(server)
-    configure_firewall(server)
-    configure_fail2ban(server)
 
 # Execute security hardening steps on each server
 for server in servers:
