@@ -16,10 +16,6 @@ variable "allowed_ssh_cidr_blocks" {
   default     = ["0.0.0.0/0"]  # Update with your desired CIDR blocks
 }
 
-variable "ami_id" {
-  default = "ami-0430580de6244e02e"  # Replace with your desired AMI ID
-}
-
 # Configure AWS provider
 provider "aws" {
   region = "us-east-2"  # Replace with your desired region
@@ -119,70 +115,97 @@ resource "aws_security_group" "db_sg" {
   }
 }
 
+# Create Nginx Load Balancer Network Interface
+resource "aws_network_interface" "nginx_lb_nic" {
+  subnet_id       = var.subnet_id
+  security_groups = [aws_security_group.nginx_sg.id]
+}
+
 # Create Nginx Load Balancer
 resource "aws_instance" "nginx_lb" {
-  ami           = var.ami_id
+  ami           = "ami-0430580de6244e02e"  # Replace with your desired Nginx AMI ID
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
-  subnet_id     = var.subnet_id
-  associate_public_ip_address = true  # Enable public IP for the Nginx server
-
-  vpc_security_group_ids = [aws_security_group.nginx_sg.id]
 
   tags = {
     Name = "nginx-lb"
   }
+
+  network_interface {
+    network_interface_id = aws_network_interface.nginx_lb_nic.id
+    device_index         = 0
+  }
+}
+
+# Create Django Application Server Network Interfaces
+resource "aws_network_interface" "django_app_1_nic" {
+  subnet_id       = var.subnet_id
+  security_groups = [aws_security_group.django_sg.id]
+}
+
+resource "aws_network_interface" "django_app_2_nic" {
+  subnet_id       = var.subnet_id
+  security_groups = [aws_security_group.django_sg.id]
 }
 
 # Create Django Application Servers
 resource "aws_instance" "django_app_1" {
-  ami           = var.ami_id
+  ami           = "ami-0430580de6244e02e"  # Replace with your desired Django AMI ID
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
-  subnet_id     = var.subnet_id
-  associate_public_ip_address = false  # Disable public IP for the Django app servers
-
-  vpc_security_group_ids = [aws_security_group.django_sg.id]
 
   tags = {
     Name = "django-app-1"
   }
+
+  network_interface {
+    network_interface_id = aws_network_interface.django_app_1_nic.id
+    device_index         = 0
+  }
 }
 
 resource "aws_instance" "django_app_2" {
-  ami           = var.ami_id
+  ami           = "ami-0430580de6244e02e"  # Replace with your desired Django AMI ID
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
-  subnet_id     = var.subnet_id
-  associate_public_ip_address = false  # Disable public IP for the Django app servers
-
-  vpc_security_group_ids = [aws_security_group.django_sg.id]
 
   tags = {
     Name = "django-app-2"
   }
+
+  network_interface {
+    network_interface_id = aws_network_interface.django_app_2_nic.id
+    device_index         = 0
+  }
+}
+
+# Create PostgreSQL Database Server Network Interface
+resource "aws_network_interface" "postgres_db_nic" {
+  subnet_id       = var.subnet_id
+  security_groups = [aws_security_group.db_sg.id]
 }
 
 # Create PostgreSQL Database Server
 resource "aws_instance" "postgres_db" {
-  ami           = var.ami_id
+  ami           = "ami-0430580de6244e02e"  # Replace with your desired PostgreSQL AMI ID
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
-  subnet_id     = var.subnet_id
-  associate_public_ip_address = false  # Disable public IP for the PostgreSQL server
-
-  vpc_security_group_ids = [aws_security_group.db_sg.id]
 
   tags = {
     Name = "postgres-db"
   }
-}
 
-# Output
+  network_interface {
+    network_interface_id = aws_network_interface.postgres_db_nic.id
+    device_index         = 0
+  }
+}
+# Output the public IP address of the Nginx Load Balancer
 output "nginx_lb_public_ip" {
   value = aws_instance.nginx_lb.public_ip
 }
 
+# Output the private IP addresses of the Django Application Servers
 output "django_app_1_private_ip" {
   value = aws_instance.django_app_1.private_ip
 }
@@ -191,6 +214,7 @@ output "django_app_2_private_ip" {
   value = aws_instance.django_app_2.private_ip
 }
 
+# Output the private IP address of the PostgreSQL Database Server
 output "postgres_db_private_ip" {
   value = aws_instance.postgres_db.private_ip
 }
