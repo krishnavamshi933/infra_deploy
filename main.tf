@@ -13,7 +13,7 @@ variable "key_pair_name" {
 
 # Configure AWS provider
 provider "aws" {
-  region = "us-east-2"  # Replace with your desired region
+  region = "us-west-2"  # Replace with your desired region
 }
 
 # Create Nginx Load Balancer Security Group
@@ -64,7 +64,7 @@ resource "aws_security_group" "db_sg" {
     from_port   = 5432
     to_port     = 5432
     protocol    = "tcp"
-    self        = true
+    security_groups = [aws_security_group.django_sg.id]
   }
 
   egress {
@@ -85,12 +85,10 @@ resource "aws_instance" "nginx_lb" {
     Name = "nginx-lb"
   }
 
-  network_interface {
-    device_index                = 0
-    subnet_id                   = var.subnet_id
-    security_group_ids          = [aws_security_group.nginx_sg.id]
-    associate_public_ip_address = false
-  }
+  vpc_security_group_ids = [aws_security_group.nginx_sg.id]
+
+  subnet_id                   = var.subnet_id
+  associate_public_ip_address = false
 
   instance_initiated_shutdown_behavior = "terminate"
 }
@@ -105,12 +103,10 @@ resource "aws_instance" "django_app_1" {
     Name = "django-app-1"
   }
 
-  network_interface {
-    device_index                = 0
-    subnet_id                   = var.subnet_id
-    security_group_ids          = [aws_security_group.django_sg.id, aws_security_group.nginx_sg.id]
-    associate_public_ip_address = false
-  }
+  vpc_security_group_ids = [aws_security_group.django_sg.id, aws_security_group.nginx_sg.id]
+
+  subnet_id                   = var.subnet_id
+  associate_public_ip_address = false
 
   instance_initiated_shutdown_behavior = "terminate"
 }
@@ -124,12 +120,10 @@ resource "aws_instance" "django_app_2" {
     Name = "django-app-2"
   }
 
-  network_interface {
-    device_index                = 0
-    subnet_id                   = var.subnet_id
-    security_group_ids          = [aws_security_group.django_sg.id, aws_security_group.nginx_sg.id]
-    associate_public_ip_address = false
-  }
+  vpc_security_group_ids = [aws_security_group.django_sg.id, aws_security_group.nginx_sg.id]
+
+  subnet_id                   = var.subnet_id
+  associate_public_ip_address = false
 
   instance_initiated_shutdown_behavior = "terminate"
 }
@@ -144,12 +138,10 @@ resource "aws_instance" "postgres_db" {
     Name = "postgres-db"
   }
 
-  network_interface {
-    device_index                = 0
-    subnet_id                   = var.subnet_id
-    security_group_ids          = [aws_security_group.db_sg.id]
-    associate_public_ip_address = false
-  }
+  vpc_security_group_ids = [aws_security_group.db_sg.id]
+
+  subnet_id                   = var.subnet_id
+  associate_public_ip_address = false
 
   instance_initiated_shutdown_behavior = "terminate"
 }
