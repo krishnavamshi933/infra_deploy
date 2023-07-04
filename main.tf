@@ -88,7 +88,7 @@ resource "aws_instance" "nginx_lb" {
   vpc_security_group_ids = [aws_security_group.nginx_sg.id]
 
   subnet_id                   = var.subnet_id
-  associate_public_ip_address = false
+  #associate_public_ip_address = false
 
   instance_initiated_shutdown_behavior = "terminate"
 }
