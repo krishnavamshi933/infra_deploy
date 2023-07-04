@@ -1,18 +1,15 @@
-# Variables
 variable "vpc_id" {
-  description = "VPC ID"
-  type        = string
+  default = "vpc-02bd2eed3cfb565df"  # Replace with your VPC ID
 }
 
 variable "subnet_id" {
-  description = "Subnet ID"
-  type        = string
+  default = "subnet-05022afbdb17f196c"  # Replace with your subnet ID
 }
 
 variable "key_pair_name" {
-  description = "Key pair name"
-  type        = string
+  default = "uma-test"  # Replace with your key pair name
 }
+
 
 variable "allowed_ssh_cidr_blocks" {
   description = "List of CIDR blocks allowed for SSH access"
@@ -22,7 +19,7 @@ variable "allowed_ssh_cidr_blocks" {
 
 # Configure AWS provider
 provider "aws" {
-  region = "us-west-2"  # Replace with your desired region
+  region = "us-east-2"  # Replace with your desired region
 }
 
 # Create Nginx Load Balancer Security Group
