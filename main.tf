@@ -13,7 +13,7 @@ variable "key_pair_name" {
 
 # Configure AWS provider
 provider "aws" {
-  region = "us-east-2"  # Replace with your desired region
+  region = "us-west-2"  # Replace with your desired region
 }
 
 # Create Nginx Load Balancer Security Group
@@ -39,16 +39,9 @@ resource "aws_security_group" "django_sg" {
   vpc_id = var.vpc_id
 
   ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.db_sg.id]
-  }
-
-  ingress {
-    from_port       = 80
-    to_port         = 80
-    protocol        = "tcp"
+    from_port   = 80
+    to_port     = 80
+    protocol    = "tcp"
     security_groups = [aws_security_group.nginx_sg.id]
   }
 
@@ -68,10 +61,10 @@ resource "aws_security_group" "db_sg" {
   vpc_id = var.vpc_id
 
   ingress {
-    from_port       = 5432
-    to_port         = 5432
-    protocol        = "tcp"
-    security_groups = [aws_security_group.django_sg.id]
+    from_port   = 5432
+    to_port     = 5432
+    protocol    = "tcp"
+    self        = true
   }
 
   egress {
