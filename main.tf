@@ -10,7 +10,6 @@ variable "key_pair_name" {
   default = "uma-test"  # Replace with your key pair name
 }
 
-
 variable "allowed_ssh_cidr_blocks" {
   description = "List of CIDR blocks allowed for SSH access"
   type        = list(string)
@@ -203,9 +202,3 @@ output "django_app_2_private_ip" {
 output "postgres_db_private_ip" {
   value = aws_instance.postgres_db.private_ip
 }
-
-
-
-
-
-
