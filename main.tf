@@ -117,7 +117,7 @@ resource "aws_security_group" "db_sg" {
 
 # Create Nginx Load Balancer
 resource "aws_instance" "nginx_lb" {
-  ami           = "ami-0123456789"  # Replace with your desired Nginx AMI ID
+  ami           = "ami-0430580de6244e02e"  # Replace with your desired Nginx AMI ID
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
   associate_public_ip_address = true  # Enable public IP for the Nginx server
@@ -134,7 +134,7 @@ resource "aws_instance" "nginx_lb" {
 
 # Create Django Application Servers
 resource "aws_instance" "django_app_1" {
-  ami           = "ami-0123456789"  # Replace with your desired Django AMI ID
+  ami           = "ami-0430580de6244e02e"  # Replace with your desired Django AMI ID
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
   associate_public_ip_address = false  # Disable public IP for the Django app servers
@@ -150,7 +150,7 @@ resource "aws_instance" "django_app_1" {
 }
 
 resource "aws_instance" "django_app_2" {
-  ami           = "ami-0123456789"  # Replace with your desired Django AMI ID
+  ami           = "ami-0430580de6244e02e"  # Replace with your desired Django AMI ID
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
   associate_public_ip_address = false  # Disable public IP for the Django app servers
@@ -167,7 +167,7 @@ resource "aws_instance" "django_app_2" {
 
 # Create PostgreSQL Database Server
 resource "aws_instance" "postgres_db" {
-  ami           = "ami-0123456789"  # Replace with your desired PostgreSQL AMI ID
+  ami           = "ami-0430580de6244e02e"  # Replace with your desired PostgreSQL AMI ID
   instance_type = "t2.micro"  # Replace with your desired instance type
   key_name      = var.key_pair_name
   associate_public_ip_address = false  # Disable public IP for the PostgreSQL server
