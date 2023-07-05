@@ -28,9 +28,9 @@ def perform_security_hardening(server):
     conn.sudo('apt-get upgrade -y')
 
     # Secure SSH
-    conn.sudo('sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/" /etc/ssh/sshd_config')
-    conn.sudo('sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config')
-    conn.sudo('systemctl restart ssh')
+    #conn.sudo('sed -i "s/#PermitRootLogin prohibit-password/PermitRootLogin no/" /etc/ssh/sshd_config')
+    #conn.sudo('sed -i "s/PasswordAuthentication yes/PasswordAuthentication no/" /etc/ssh/sshd_config')
+    #conn.sudo('systemctl restart ssh')
 
     # Configure firewall (UFW)
     conn.sudo('ufw default deny incoming')
