@@ -137,17 +137,6 @@ resource "aws_instance" "nginx_lb" {
   }
 }
 
-# Create Django Application Server Network Interfaces
-resource "aws_network_interface" "django_app_1_nic" {
-  subnet_id       = var.subnet_id
-  security_groups = [aws_security_group.django_sg.id]
-}
-
-resource "aws_network_interface" "django_app_2_nic" {
-  subnet_id       = var.subnet_id
-  security_groups = [aws_security_group.django_sg.id]
-}
-
 # Create Django Application Servers
 resource "aws_instance" "django_app_1" {
   ami           = "ami-0430580de6244e02e"  # Replace with your desired Django AMI ID
@@ -159,12 +148,10 @@ resource "aws_instance" "django_app_1" {
   }
 
   network_interface {
-    network_interface_id = aws_network_interface.django_app_1_nic.id
-    device_index         = 0
+    network_interface_id         = aws_network_interface.django_app_1_nic.id
+    device_index                 = 0
+    associate_public_ip_address  = false  # Disable public IP for this instance
   }
-
-  // Disable public IP assignment
-  associate_public_ip_address = false
 }
 
 resource "aws_instance" "django_app_2" {
@@ -177,18 +164,10 @@ resource "aws_instance" "django_app_2" {
   }
 
   network_interface {
-    network_interface_id = aws_network_interface.django_app_2_nic.id
-    device_index         = 0
+    network_interface_id         = aws_network_interface.django_app_2_nic.id
+    device_index                 = 0
+    associate_public_ip_address  = false  # Disable public IP for this instance
   }
-
-  // Disable public IP assignment
-  associate_public_ip_address = false
-}
-
-# Create PostgreSQL Database Server Network Interface
-resource "aws_network_interface" "postgres_db_nic" {
-  subnet_id       = var.subnet_id
-  security_groups = [aws_security_group.db_sg.id]
 }
 
 # Create PostgreSQL Database Server
@@ -202,13 +181,12 @@ resource "aws_instance" "postgres_db" {
   }
 
   network_interface {
-    network_interface_id = aws_network_interface.postgres_db_nic.id
-    device_index         = 0
+    network_interface_id         = aws_network_interface.postgres_db_nic.id
+    device_index                 = 0
+    associate_public_ip_address  = false  # Disable public IP for this instance
   }
-
-  // Disable public IP assignment
-  associate_public_ip_address = false
 }
+
 # Output the public IP address of the Nginx Load Balancer
 output "nginx_lb_public_ip" {
   value = aws_instance.nginx_lb.public_ip
