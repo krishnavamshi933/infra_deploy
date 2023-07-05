@@ -117,8 +117,9 @@ resource "aws_security_group" "db_sg" {
 
 # Create Nginx Load Balancer Network Interface
 resource "aws_network_interface" "nginx_lb_nic" {
-  subnet_id       = var.subnet_id
-  security_groups = [aws_security_group.nginx_sg.id]
+  subnet_id                 = var.subnet_id
+  security_groups           = [aws_security_group.nginx_sg.id]
+  associate_public_ip_address = true  # Enable public IP address assignment
 }
 
 # Create Nginx Load Balancer
@@ -139,13 +140,15 @@ resource "aws_instance" "nginx_lb" {
 
 # Create Django Application Server Network Interfaces
 resource "aws_network_interface" "django_app_1_nic" {
-  subnet_id       = var.subnet_id
-  security_groups = [aws_security_group.django_sg.id]
+  subnet_id                 = var.subnet_id
+  security_groups           = [aws_security_group.django_sg.id]
+  associate_public_ip_address = false  # Disable public IP address assignment
 }
 
 resource "aws_network_interface" "django_app_2_nic" {
-  subnet_id       = var.subnet_id
-  security_groups = [aws_security_group.django_sg.id]
+  subnet_id                 = var.subnet_id
+  security_groups           = [aws_security_group.django_sg.id]
+  associate_public_ip_address = false  # Disable public IP address assignment
 }
 
 # Create Django Application Servers
@@ -181,8 +184,9 @@ resource "aws_instance" "django_app_2" {
 
 # Create PostgreSQL Database Server Network Interface
 resource "aws_network_interface" "postgres_db_nic" {
-  subnet_id       = var.subnet_id
-  security_groups = [aws_security_group.db_sg.id]
+  subnet_id                 = var.subnet_id
+  security_groups           = [aws_security_group.db_sg.id]
+  associate_public_ip_address = false  # Disable public IP address assignment
 }
 
 # Create PostgreSQL Database Server
