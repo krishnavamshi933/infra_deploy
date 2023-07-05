@@ -162,6 +162,9 @@ resource "aws_instance" "django_app_1" {
     network_interface_id = aws_network_interface.django_app_1_nic.id
     device_index         = 0
   }
+
+  // Disable public IP assignment
+  associate_public_ip_address = false
 }
 
 resource "aws_instance" "django_app_2" {
@@ -177,6 +180,9 @@ resource "aws_instance" "django_app_2" {
     network_interface_id = aws_network_interface.django_app_2_nic.id
     device_index         = 0
   }
+
+  // Disable public IP assignment
+  associate_public_ip_address = false
 }
 
 # Create PostgreSQL Database Server Network Interface
@@ -199,6 +205,9 @@ resource "aws_instance" "postgres_db" {
     network_interface_id = aws_network_interface.postgres_db_nic.id
     device_index         = 0
   }
+
+  // Disable public IP assignment
+  associate_public_ip_address = false
 }
 # Output the public IP address of the Nginx Load Balancer
 output "nginx_lb_public_ip" {
